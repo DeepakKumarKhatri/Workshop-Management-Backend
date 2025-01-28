@@ -9,6 +9,7 @@ const rateLimit = require("express-rate-limit");
 const connectDB = require("./config/database");
 const workshopRoutes = require("./routes/workshop");
 const userRoutes = require("./routes/user");
+const calenderRoutes = require("./routes/calender");
 require("dotenv").config();
 
 var app = express();
@@ -30,6 +31,7 @@ app.use(limiter);
 
 app.use("/api/v1/workshops", workshopRoutes);
 app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/google", calenderRoutes);
 
 app.use(function (req, res, next) {
   next(createError(404));

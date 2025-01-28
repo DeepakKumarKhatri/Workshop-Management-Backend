@@ -21,7 +21,13 @@ const userSchema = new mongoose.Schema(
       email: { type: Boolean, default: true },
       push: { type: Boolean, default: true },
     },
-    googleCalendarToken: String,
+    googleCalendarTokens: {
+      access_token: String,
+      refresh_token: String,
+      scope: String,
+      token_type: String,
+      expiry_date: Number,
+    },
   },
   { timestamps: true }
 );

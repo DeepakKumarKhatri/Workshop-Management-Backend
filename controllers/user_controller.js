@@ -20,7 +20,7 @@ const login = async (req, res) => {
   if (!user || !(await comparePassword(password, user.password))) {
     return res.status(400).json({ message: "Invalid email or password." });
   }
-  const token = generateToken(user._id, user.role);
+  const token = generateToken(user._id, user.role, user.googleCalendarToken);
   res.json({ token });
 };
 

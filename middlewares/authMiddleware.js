@@ -1,21 +1,32 @@
-const authMiddleware = (roles) => (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) {
-    return res
-      .status(401)
-      .json({ message: "Access denied. No token provided." });
-  }
+const jwt = require("jsonwebtoken");
 
+const authMiddleware = (roles) => (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (roles && !roles.includes(decoded.role)) {
-      return res
-        .status(403)
-        .json({ message: "Access denied. Insufficient permissions." });
+    const authHeader = req.header("Authorization");
+
+    if (!authHeader) {
+      return res.status(401).json({ message: "Access denied. No token provided." });
     }
-    req.user = decoded; // Attach user data to the request
+
+    // Extract token - handle potential double "Bearer" case
+    const token = authHeader
+      .replace(/^Bearer\s+Bearer\s+/, '')  // Remove double Bearer if present
+      .replace(/^Bearer\s+/, '');          // Remove single Bearer if present
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (roles && !roles.includes(decoded.role)) {
+      return res.status(403).json({ message: "Access denied. Insufficient permissions." });
+    }
+    console.log(decoded)
+    req.user = decoded;
     next();
   } catch (error) {
+    console.error("Token verification error details:", {
+      errorName: error.name,
+      errorMessage: error.message,
+      token: req.header("Authorization")
+    });
     res.status(400).json({ message: "Invalid token." });
   }
 };

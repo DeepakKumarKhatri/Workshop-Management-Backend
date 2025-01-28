@@ -1,10 +1,14 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-const generateToken = (userId, role) => {
-  return jwt.sign({ userId, role }, process.env.JWT_SECRET, {
-    expiresIn: "24h",
-  });
+const generateToken = (userId, role, googleCalendarToken) => {
+  return jwt.sign(
+    { userId, role, googleCalendarToken },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "24h",
+    }
+  );
 };
 
 const hashPassword = async (password) => {
