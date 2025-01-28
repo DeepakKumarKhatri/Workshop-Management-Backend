@@ -20,19 +20,14 @@ router.get(
   WorkshopController.getEnrolledWorkshops
 );
 router.put(
-  "/workshops/:workshopId/activities/:activityId",
+  "/:workshopId/activities/:activityId",
   authMiddleware(["mentor"]),
   WorkshopController.updateActivity
 );
 router.delete(
-  "/workshops/:workshopId/activities/:activityId",
+  "/:workshopId/activities/:activityId",
   authMiddleware(["mentor"]),
   WorkshopController.deleteActivity
-);
-router.put(
-  "/users/notification-preferences",
-  authMiddleware(["mentor", "learner"]),
-  WorkshopController.updateNotificationPreferences
 );
 
 module.exports = router;

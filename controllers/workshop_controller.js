@@ -187,28 +187,6 @@ class WorkshopController {
       res.status(400).json({ error: error.message });
     }
   }
-
-  async updateNotificationPreferences(req, res) {
-    try {
-      const { email, push } = req.body;
-
-      const user = await User.findById(req.user.userId);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      // Update notification preferences
-      user.notificationPreferences = { email, push };
-      await user.save();
-
-      res.status(200).json({
-        message: "Notification preferences updated successfully",
-        notificationPreferences: user.notificationPreferences,
-      });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  }
 }
 
 module.exports = new WorkshopController();

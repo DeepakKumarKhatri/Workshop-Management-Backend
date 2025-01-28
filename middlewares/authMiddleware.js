@@ -8,7 +8,7 @@ const authMiddleware = (roles) => (req, res, next) => {
       return res.status(401).json({ message: "Access denied. No token provided." });
     }
 
-    // Extract token - handle potential double "Bearer" case
+    // Extract token
     const token = authHeader
       .replace(/^Bearer\s+Bearer\s+/, '')  // Remove double Bearer if present
       .replace(/^Bearer\s+/, '');          // Remove single Bearer if present

@@ -29,7 +29,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 app.use("/api/v1/workshops", workshopRoutes);
-app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/google", calenderRoutes);
 
 app.use(function (req, res, next) {
