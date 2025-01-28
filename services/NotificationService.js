@@ -1,7 +1,20 @@
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 class NotificationService {
   constructor() {
+    if (
+      !process.env.SMTP_HOST ||
+      !process.env.SMTP_PORT ||
+      !process.env.SMTP_USER ||
+      !process.env.SMTP_PASS ||
+      !process.env.SMTP_FROM
+    ) {
+      throw new Error(
+        "Missing required SMTP configuration in environment variables."
+      );
+    }
+
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
@@ -13,37 +26,61 @@ class NotificationService {
   }
 
   async sendEnrollmentNotification(user, workshop) {
-    if (!user.notificationPreferences.email) return;
+    try {
+      if (!user || !workshop) {
+        throw new Error("User and workshop details are required.");
+      }
 
-    const mailOptions = {
-      from: process.env.SMTP_FROM,
-      to: user.email,
-      subject: `Enrollment Confirmation: ${workshop.title}`,
-      html: `
-        <h1>Workshop Enrollment Confirmation</h1>
-        <p>You have been enrolled in ${workshop.title}</p>
-        <p>Start Date: ${workshop.startDate}</p>
-        <p>End Date: ${workshop.endDate}</p>
-      `,
-    };
+      if (!user.notificationPreferences?.email) {
+        console.log("Email notifications are disabled for this user.");
+        return;
+      }
 
-    await this.transporter.sendMail(mailOptions);
+      const mailOptions = {
+        from: process.env.SMTP_FROM,
+        to: user.email,
+        subject: `Enrollment Confirmation: ${workshop.title}`,
+        html: `
+          <h1>Workshop Enrollment Confirmation</h1>
+          <p>You have been enrolled in ${workshop.title}</p>
+          <p>Start Date: ${workshop.startDate}</p>
+          <p>End Date: ${workshop.endDate}</p>
+        `,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      console.log(`Enrollment notification sent to ${user.email}`);
+    } catch (error) {
+      console.error("Error sending enrollment notification:", error);
+    }
   }
 
   async notifyMentor(mentor, workshop, learner) {
-    if (!mentor.notificationPreferences.email) return;
+    try {
+      if (!mentor || !workshop || !learner) {
+        throw new Error("Mentor, workshop, and learner details are required.");
+      }
 
-    const mailOptions = {
-      from: process.env.SMTP_FROM,
-      to: mentor.email,
-      subject: `New Enrollment: ${workshop.title}`,
-      html: `
-        <h1>New Workshop Enrollment</h1>
-        <p>${learner.email} has enrolled in your workshop: ${workshop.title}</p>
-      `,
-    };
+      if (!mentor.notificationPreferences?.email) {
+        console.log("Email notifications are disabled for this mentor.");
+        return;
+      }
 
-    await this.transporter.sendMail(mailOptions);
+      const mailOptions = {
+        from: process.env.SMTP_FROM,
+        to: mentor.email,
+        subject: `New Enrollment: ${workshop.title}`,
+        html: `
+          <h1>New Workshop Enrollment</h1>
+          <p>${learner.email} has enrolled in your workshop: ${workshop.title}</p>
+        `,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      console.log(`Mentor notification sent to ${mentor.email}`);
+    } catch (error) {
+      console.error("Error sending mentor notification:", error);
+    }
   }
 }
 

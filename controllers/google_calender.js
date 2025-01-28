@@ -1,28 +1,55 @@
-const express = require("express");
 const User = require("../models/user");
 const GoogleCalendarService = require("../services/GoogleCalendarService");
 
-// Google OAuth flow
 const getCalender = (req, res) => {
-  const authUrl = GoogleCalendarService.getAuthUrl();
-  res.redirect(authUrl);
+  try {
+    const authUrl = GoogleCalendarService.getAuthUrl();
+    res.redirect(authUrl);
+  } catch (error) {
+    console.error("Error generating Google OAuth URL:", error);
+    res.status(500).json({ error: "Failed to initiate Google OAuth flow." });
+  }
 };
 
-// OAuth callback route
 const getCalenderCallback = () => async (req, res) => {
   try {
     const { code } = req.query;
-    const tokens = await GoogleCalendarService.getTokens(code);
 
-    // Save tokens to user record
-    await User.findByIdAndUpdate(req.user.userId, {
-      googleCalendarTokens: tokens,
-    });
+    if (!code) {
+      return res.status(400).json({ error: "Authorization code is required." });
+    }
+
+    // Exchange authorization code for tokens
+    const tokens = await GoogleCalendarService.getTokens(code);
+    if (!tokens) {
+      return res
+        .status(500)
+        .json({ error: "Failed to retrieve tokens from Google." });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.userId,
+      { googleCalendarTokens: tokens },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
 
     res.redirect("/redirect"); // Redirect to dashboard when frontend is integrated
   } catch (error) {
     console.error("OAuth callback error:", error);
-    res.status(500).json({ error: "Failed to complete authentication" });
+
+    if (error.message.includes("invalid_grant")) {
+      return res
+        .status(400)
+        .json({ error: "Invalid authorization code. Please try again." });
+    }
+
+    res
+      .status(500)
+      .json({ error: "Failed to complete Google OAuth authentication." });
   }
 };
 

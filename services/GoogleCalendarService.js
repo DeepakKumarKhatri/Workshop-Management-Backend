@@ -1,4 +1,5 @@
 const { google } = require("googleapis");
+require("dotenv").config();
 
 class GoogleCalendarService {
   constructor() {
