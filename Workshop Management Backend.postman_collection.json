@@ -1,0 +1,506 @@
+{
+	"info": {
+		"_postman_id": "a1ffc3b0-5909-4cc9-8cda-85c0405badd2",
+		"name": "Workshop Management Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29811439"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Save token to environment\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    if (jsonData.token) {\r",
+									"        pm.environment.set(\"authToken\", jsonData.token);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"if (pm.environment.get(\"authToken\")) {\r",
+									"    pm.request.headers.add({\r",
+									"        key: \"Authorization\",\r",
+									"        value: \"Bearer \" + pm.environment.get(\"authToken\")\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"khatrideepak112@gmail.com\",\r\n    \"password\": \"Test@100\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/user/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"khatrideepak112@gmail.com\",\r\n    \"password\": \"Test@100\",\r\n    \"name\": \"Deepak Kumar\",\r\n    \"role\": \"mentor\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/user/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notification Preferences",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": true,\r\n    \"push\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/user/notification-preferences",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"notification-preferences"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Workshops",
+			"item": [
+				{
+					"name": "Create Workshop",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Advanced JavaScript Programming\",\r\n  \"description\": \"Master modern JavaScript concepts including ES6+, async/await, and advanced patterns\",\r\n  \"capacity\": 20,\r\n  \"startDate\": \"2025-02-15T09:00:00.000Z\",\r\n  \"endDate\": \"2025-02-17T17:00:00.000Z\"\r\n//   \"mentor\": \"6798ca5f28e7e12e675a2f45\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/workshops/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"workshops",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll in Workshop",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/workshops/6798dcc8c694111e2df34b22/enroll",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"workshops",
+								"6798dcc8c694111e2df34b22",
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Enrolls",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/workshops/enrolled",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"workshops",
+								"enrolled"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Activities Workshop",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if (pm.environment.get(\"authToken\")) {\r",
+									"    pm.request.headers.add({\r",
+									"        key: \"Authorization\",\r",
+									"        value: \"Bearer \" + pm.environment.get(\"authToken\")\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Introduction to JavaScript\",\r\n  \"description\": \"Deep dive into JavaScript Execution Context 3\",\r\n  \"startTime\": \"2025-02-15T10:00:00.000Z\",\r\n  \"endTime\": \"2025-02-15T12:00:00.000Z\",\r\n  \"location\": {\r\n    \"address\": \"123 Tech Street, Islamabad Capital, ISB 94025\",\r\n    \"coordinates\": {\r\n      \"lat\": 37.4419,\r\n      \"lng\": -122.1419\r\n    }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/workshops/6798dcc8c694111e2df34b22/activities",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"workshops",
+								"6798dcc8c694111e2df34b22",
+								"activities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Activities Workshop",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if (pm.environment.get(\"authToken\")) {\r",
+									"    pm.request.headers.add({\r",
+									"        key: \"Authorization\",\r",
+									"        value: \"Bearer \" + pm.environment.get(\"authToken\")\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Introduction to JavaScript\",\r\n  \"description\": \"Deep dive into JavaScript Execution Context Updated\",\r\n  \"startTime\": \"2025-02-15T10:00:00.000Z\",\r\n  \"endTime\": \"2025-02-15T12:00:00.000Z\",\r\n  \"location\": {\r\n    \"address\": \"123 Tech Street, Islamabad Capital, ISB 94025\",\r\n    \"coordinates\": {\r\n      \"lat\": 37.4419,\r\n      \"lng\": -122.1419\r\n    }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/workshops/6798dcc8c694111e2df34b22/activities/679917bfe43d38f28776d7a6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"workshops",
+								"6798dcc8c694111e2df34b22",
+								"activities",
+								"679917bfe43d38f28776d7a6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Activities Workshop",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if (pm.environment.get(\"authToken\")) {\r",
+									"    pm.request.headers.add({\r",
+									"        key: \"Authorization\",\r",
+									"        value: \"Bearer \" + pm.environment.get(\"authToken\")\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Introduction to JavaScript\",\r\n  \"description\": \"Deep dive into JavaScript Execution Context Updated\",\r\n  \"startTime\": \"2025-02-15T10:00:00.000Z\",\r\n  \"endTime\": \"2025-02-15T12:00:00.000Z\",\r\n  \"location\": {\r\n    \"address\": \"123 Tech Street, Islamabad Capital, ISB 94025\",\r\n    \"coordinates\": {\r\n      \"lat\": 37.4419,\r\n      \"lng\": -122.1419\r\n    }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/workshops/6798dcc8c694111e2df34b22/activities/679917bfe43d38f28776d7a6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"workshops",
+								"6798dcc8c694111e2df34b22",
+								"activities",
+								"679917bfe43d38f28776d7a6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Google Calender",
+			"item": [
+				{
+					"name": "Google Calender",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/google/calendar/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"google",
+								"calendar",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Google Callbacks",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/google/callback/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"google",
+								"callback",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "Bearer {{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000/api",
+			"type": "default"
+		}
+	]
+}
