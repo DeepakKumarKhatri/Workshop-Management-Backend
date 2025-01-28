@@ -156,7 +156,7 @@ class WorkshopController {
       }
 
       workshop.enrolledLearners.push({
-        learner: req.user._id || req.body.learner,
+        learner: req.user.userId, 
         status: "confirmed",
       });
 
@@ -179,7 +179,7 @@ class WorkshopController {
   async getEnrolledWorkshops(req, res) {
     try {
       const workshops = await Workshop.find({
-        "enrolledLearners.learner": req.user._id || req.body.learner,
+        "enrolledLearners.learner": req.user.userId,
       }).populate("activities");
 
       res.status(200).json(workshops);

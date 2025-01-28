@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: express_app
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://localhost:27017/workshop-management
+      - JWT_SECRET=your-jwt-secret-key
+      - SMTP_HOST=smtp.example.com
+      - SMTP_PORT=587
+      - SMTP_USER=your-smtp-user
+      - SMTP_PASS=your-smtp-password
+      - SMTP_FROM=noreply@example.com
+      - GOOGLE_CALENDAR_API_KEY=your-google-calendar-api-key
+      - NODE_ENV=development
+      - GOOGLE_CLIENT_ID=YOUR_KEY
+      - GOOGLE_CLIENT_SECRET=YOUR_KEY
+      - GOOGLE_REDIRECT_URI=http://localhost:3000/redirect
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+volumes:
+  mongo-data:
