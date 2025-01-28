@@ -67,10 +67,8 @@ class GoogleCalendarService {
     } catch (error) {
       console.error("Error creating calendar event:", error);
       if (error.code === 401) {
-        // Token expired - try to refresh
         try {
           const newTokens = await this.refreshTokens(userTokens.refresh_token);
-          // Update user's tokens in your database here
           return this.createEvent(activity, newTokens);
         } catch (refreshError) {
           throw new Error(
